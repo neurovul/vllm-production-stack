@@ -428,6 +428,12 @@
           }
         }
       }
+    },
+    "extraDeploy": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
     }
   }
 }

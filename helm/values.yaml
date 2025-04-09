@@ -329,3 +329,13 @@ routerSpec:
   #  httpGet:
   #    # -- Path to access on the HTTP server
   #
+
+# -- Extra resources to be added to the helm chart
+extraDeploy: []
+# extraDeploy:
+#   - apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: my-configmap
+#     data:
+#       key: value
