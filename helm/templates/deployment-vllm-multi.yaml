@@ -198,7 +198,7 @@ spec:
           {{- if or (hasKey $modelSpec "pvcStorage") (and $modelSpec.vllmConfig (hasKey $modelSpec.vllmConfig "tensorParallelSize")) (hasKey $modelSpec "chatTemplate") (hasKey $modelSpec "extraVolumeMounts") }}
           volumeMounts:
           {{- end }}
-          {{- if hasKey $modelSpec "pvcStorage" }}
+          {{- if and (hasKey $modelSpec "pvcStorage") (not $modelSpec.sharePvcStorage) }}
           - name: {{ .Release.Name }}-storage
             mountPath: /data
           {{- end }}
