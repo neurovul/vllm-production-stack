@@ -426,6 +426,56 @@
               "type": "string"
             }
           }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string"
+              },
+              "effect": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "nodeSelectorTerms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matchExpressions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "operator": {
+                      "type": "string"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "operator",
+                    "values"
+                  ]
+                }
+              }
+            }
+          }
         }
       }
     },
