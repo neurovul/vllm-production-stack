@@ -8,18 +8,22 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     model: {{ $modelSpec.name }}
+    helm-release-name: {{ .Release.Name }}
   {{- include "chart.engineLabels" . | nindent 4 }}
 spec:
   replicas: {{ $modelSpec.replicaCount }}
   {{- include "chart.engineStrategy" . | nindent 2 }}
   selector:
     matchLabels:
+      model: {{ $modelSpec.name }}
+      helm-release-name: {{ .Release.Name }}
     {{- include "chart.engineLabels" . | nindent 6 }}
   progressDeadlineSeconds: 1200
   template:
     metadata:
       labels:
         model: {{ $modelSpec.name }}
+        helm-release-name: {{ .Release.Name }}
       {{- include "chart.engineLabels" . | nindent 8 }}
     spec:
       {{- if hasKey $modelSpec "initContainer" }}
@@ -39,12 +43,10 @@ spec:
           {{- if $container.resources }}
           resources: {{ toYaml $container.resources | nindent 12 }}
           {{- end }}
-          {{- if hasKey $container "mountPvcStorage" }}
+          {{- if and (hasKey $container "mountPvcStorage") ($container.mountPvcStorage) (hasKey $modelSpec "pvcStorage") }}
           volumeMounts:
-          {{- if and $container.volumeMounts.pvcStorage (hasKey $modelSpec "pvcStorage") }}
             - name: {{ .Release.Name }}-storage
               mountPath: /data
-          {{- end }}
           {{- end }}
       {{- end }}
       {{- if .Values.servingEngineSpec.securityContext }}
@@ -92,6 +94,18 @@ spec:
           {{-   if hasKey . "tensorParallelSize" }}
           - "--tensor-parallel-size"
           - {{ .tensorParallelSize | quote }}
+          {{-   end }}
+          {{-   if hasKey . "maxNumSeqs" }}
+          - "--max-num-seqs"
+          - {{ .maxNumSeqs | quote }}
+          {{-   end }}
+          {{-   if hasKey . "gpuMemoryUtilization" }}
+          - "--gpu_memory_utilization"
+          - {{ .gpuMemoryUtilization | quote }}
+          {{-   end }}
+          {{-   if hasKey . "maxLoras" }}
+          - "--max_loras"
+          - {{ .maxLoras | quote }}
           {{-   end }}
           {{-   if .extraArgs }}
           {{-     range .extraArgs }}
